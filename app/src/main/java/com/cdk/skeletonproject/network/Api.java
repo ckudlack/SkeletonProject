@@ -32,7 +32,11 @@ public final class Api {
 
         okHttpClient = createOkHttpClient().addInterceptor(logging).build();
 
-        networkService = new Retrofit.Builder().client(okHttpClient).baseUrl(BASE_URL).addConverterFactory(MoshiConverterFactory.create(getMoshi()).asLenient()).addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        networkService = new Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(MoshiConverterFactory.create(getMoshi()).asLenient())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build().create(NetworkService.class);
 
         return networkService;
