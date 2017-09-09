@@ -1,5 +1,9 @@
 package com.cdk.skeletonproject.network;
 
+import com.cdk.skeletonproject.network.adapter.BigDecimalAdapter;
+import com.cdk.skeletonproject.network.adapter.LocalDateAdapter;
+import com.cdk.skeletonproject.network.adapter.LocalDateTimeAdapter;
+import com.cdk.skeletonproject.network.adapter.LocalTimeAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.concurrent.TimeUnit;
@@ -56,7 +60,10 @@ public final class Api {
     private static Moshi getMoshi() {
         if (moshi == null) {
             moshi = new Moshi.Builder()
-//                    .add(new SampleAdapter())
+                    .add(new BigDecimalAdapter())
+                    .add(new LocalDateAdapter())
+                    .add(new LocalTimeAdapter())
+                    .add(new LocalDateTimeAdapter())
                     .build();
         }
 
