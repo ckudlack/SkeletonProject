@@ -46,7 +46,7 @@ public class MainPresenter implements MainContract.Presenter {
 
             @Override
             public void onNext(FollowingsResponse soundCloudUsers) {
-                Timber.d("onNext");
+                view.setUserList(soundCloudUsers.getUsers());
             }
         });
     }
