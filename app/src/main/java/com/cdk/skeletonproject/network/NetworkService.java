@@ -1,37 +1,20 @@
 package com.cdk.skeletonproject.network;
 
-import java.util.Map;
+import com.cdk.skeletonproject.data.FollowingsResponse;
+import com.cdk.skeletonproject.data.SoundCloudUser;
 
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import java.util.List;
+
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+import rx.Observable;
 
 public interface NetworkService {
 
-    @FormUrlEncoded
-    @POST("some/url/appended/to/base")
-    Call<Object> postStringToServer(@Field("aString") String string);
+    @GET("users")
+    Observable<List<SoundCloudUser>> findUser(@Query("client_id") String clientId, @Query("q") String userName);
 
-    /**
-     * Sample RequestBody creation:
-     *
-     * RequestBody body = RequestBody.create(MediaType.parse("image/*"), aFile);
-     */
-    @POST("some/url/{pathName}/to/base")
-    Call<Object> postImageWithOtherParams(@Path("pathName") long param,
-                                          @QueryMap Map<String, String> params,
-                                          @Body RequestBody image);
-
-    @GET("some/url/appended/to/base")
-    Call<String> getStringFromServer(@Query("paramName") String someParameter);
-
-    @GET("some/url/appended/to/base")
-    Call<Object> getItemFromServerWithLotsOfParams(@QueryMap Map<String, String> params);
+    @GET("users/{id}/followings")
+    Observable<FollowingsResponse> getFollowing(@Path("id") long userId, @Query("client_id") String clientId);
 }

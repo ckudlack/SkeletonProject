@@ -16,7 +16,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public final class Api {
 
-    private static final String BASE_URL = "";
+    private static final String BASE_URL_SOUNDCLOUD = "https://api.soundcloud.com/";
 
     private static OkHttpClient okHttpClient;
     private static Moshi moshi;
@@ -38,7 +38,7 @@ public final class Api {
 
         networkService = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_SOUNDCLOUD)
                 .addConverterFactory(MoshiConverterFactory.create(getMoshi()).asLenient())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build().create(NetworkService.class);
