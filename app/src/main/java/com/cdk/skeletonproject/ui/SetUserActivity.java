@@ -10,8 +10,8 @@ import android.widget.EditText;
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
-import com.cdk.skeletonproject.mvp.contract.MainContract;
-import com.cdk.skeletonproject.mvp.presenter.MainPresenter;
+import com.cdk.skeletonproject.mvp.contract.SetUserContract;
+import com.cdk.skeletonproject.mvp.presenter.SetUserPresenter;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
 import com.cdk.skeletonproject.network.Api;
@@ -22,20 +22,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener {
+public class SetUserActivity extends AppCompatActivity implements SetUserContract.View, UsersAdapter.UserItemClickListener {
 
     @BindView(R.id.username) EditText userNameField;
     @BindView(R.id.users_list) RecyclerView recyclerView;
 
-    private MainContract.Presenter presenter;
+    private SetUserContract.Presenter presenter;
     private UsersAdapter adapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_set_user);
+
         ButterKnife.bind(this);
 
-        presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(Api.getNetworkService())));
+        presenter = new SetUserPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(Api.getNetworkService())));
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 

@@ -2,7 +2,7 @@ package com.cdk.skeletonproject.mvp.presenter;
 
 import com.cdk.skeletonproject.data.FollowingsResponse;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
-import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
+import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
 
 import rx.Subscriber;
 import timber.log.Timber;
@@ -10,9 +10,9 @@ import timber.log.Timber;
 public class MainPresenter implements MainContract.Presenter {
 
     private MainContract.View view;
-    private MainUseCase useCase;
+    private SoundCloudSearchUseCase useCase;
 
-    public MainPresenter(MainContract.View view, MainUseCase useCase) {
+    public MainPresenter(MainContract.View view, SoundCloudSearchUseCase useCase) {
         this.view = view;
         this.useCase = useCase;
     }
@@ -33,7 +33,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void buttonClicked(String userName, String clientId) {
-        useCase.findUser(userName, clientId, new Subscriber<FollowingsResponse>() {
+        useCase.findUserAndFollowing(userName, clientId, new Subscriber<FollowingsResponse>() {
             @Override
             public void onCompleted() {
 

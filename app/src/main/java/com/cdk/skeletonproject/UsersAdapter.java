@@ -18,14 +18,23 @@ import butterknife.ButterKnife;
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
     private List<SoundCloudUser> users = new ArrayList<>();
+    private UserItemClickListener itemClickListener;
 
-    public UsersAdapter(List<SoundCloudUser> users) {
-        this.users = users;
+    public UsersAdapter(List<SoundCloudUser> users, UserItemClickListener itemClickListener) {
+        this.users.addAll(users);
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new UserViewHolder(View.inflate(parent.getContext(), R.layout.user_list_item, null));
+        final UserViewHolder userViewHolder = new UserViewHolder(View.inflate(parent.getContext(), R.layout.user_list_item, null));
+        userViewHolder.itemView.setOnClickListener(view -> {
+            final int position = userViewHolder.getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                itemClickListener.onItemClick(users.get(position));
+            }
+        });
+        return userViewHolder;
     }
 
     @Override
@@ -59,5 +68,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             Glide.with(this.itemView.getContext()).load(avatarUrl).into(avatar);
             userName.setText(user);
         }
+    }
+
+    public interface UserItemClickListener {
+        void onItemClick(SoundCloudUser user);
     }
 }
