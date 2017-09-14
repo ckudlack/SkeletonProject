@@ -13,5 +13,6 @@ public interface SetUserContract {
 
     interface Presenter extends BasePresenter {
         void buttonClicked(String userName, String clientId);
+        void setUserAsDefault(SoundCloudUser user);
     }
 }

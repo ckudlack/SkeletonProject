@@ -1,5 +1,6 @@
 package com.cdk.skeletonproject.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,8 @@ import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
+import com.cdk.skeletonproject.mvp.datasource.SoundCloudLocalDataSource;
+import com.cdk.skeletonproject.mvp.datasource.SoundCloudRemoteDataSource;
 import com.cdk.skeletonproject.mvp.presenter.MainPresenter;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
@@ -21,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener {
 
@@ -35,8 +39,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(Api.getNetworkService())));
+        presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        presenter.init();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @OnClick(R.id.button)
@@ -68,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else {
             adapter.update(users);
         }
+    }
+
+    @Override
+    public void startUserSelectionActivity() {
+        startActivity(new Intent(this, SetUserActivity.class));
     }
 
     @Override

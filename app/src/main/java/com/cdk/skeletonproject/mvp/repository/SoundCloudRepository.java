@@ -1,9 +1,7 @@
 package com.cdk.skeletonproject.mvp.repository;
 
-import com.cdk.skeletonproject.data.FollowingsResponse;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
-import com.cdk.skeletonproject.network.NetworkService;
 
 import java.util.List;
 
@@ -11,19 +9,48 @@ import rx.Observable;
 
 public class SoundCloudRepository implements SoundCloudDataContract.Repository {
 
-    private NetworkService service;
+    private SoundCloudDataContract.DataSource localDataSource;
+    private SoundCloudDataContract.DataSource remoteDataSource;
 
-    public SoundCloudRepository(NetworkService service) {
-        this.service = service;
+    public SoundCloudRepository(SoundCloudDataContract.DataSource localDataSource, SoundCloudDataContract.DataSource remoteDataSource) {
+        this.localDataSource = localDataSource;
+        this.remoteDataSource = remoteDataSource;
     }
 
     @Override
     public Observable<List<SoundCloudUser>> findUser(String userName, String clientId) {
-        return service.findUser(clientId, userName);
+        return localDataSource.findUser(userName, clientId).flatMap(soundCloudUsers -> {
+            if (soundCloudUsers == null || soundCloudUsers.isEmpty()) {
+                final Observable<List<SoundCloudUser>> user = remoteDataSource.findUser(userName, clientId);
+                return user;
+            }
+            return Observable.just(soundCloudUsers);
+        });
     }
 
     @Override
-    public Observable<FollowingsResponse> getFollowing(long userId, String clientId) {
-        return service.getFollowing(userId, clientId);
+    public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
+        return localDataSource.getFollowing(userId, clientId).flatMap(soundCloudUsers -> {
+            if (soundCloudUsers == null || soundCloudUsers.isEmpty()) {
+                return remoteDataSource.getFollowing(userId, clientId);
+            }
+            return Observable.just(soundCloudUsers);
+        });
+    }
+
+    @Override
+    public Observable<Void> setDefaultUser(SoundCloudUser user) {
+        return localDataSource.setDefaultUser(user);
+    }
+
+    @Override
+    public Observable<SoundCloudUser> getDefaultUser() {
+        return localDataSource.getDefaultUser();
+    }
+
+    @Override
+    public void closeRealm() {
+        localDataSource.close();
+        remoteDataSource.close();
     }
 }

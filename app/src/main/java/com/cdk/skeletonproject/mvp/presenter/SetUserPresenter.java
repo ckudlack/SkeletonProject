@@ -28,7 +28,7 @@ public class SetUserPresenter implements SetUserContract.Presenter {
 
     @Override
     public void onDestroy() {
-
+        useCase.closeRealm();
     }
 
     @Override
@@ -39,5 +39,10 @@ public class SetUserPresenter implements SetUserContract.Presenter {
                 view.setUserList(soundCloudUsers);
             }
         });
+    }
+
+    @Override
+    public void setUserAsDefault(SoundCloudUser user) {
+        useCase.setDefaultUser(user, new DefaultSubscriber());
     }
 }

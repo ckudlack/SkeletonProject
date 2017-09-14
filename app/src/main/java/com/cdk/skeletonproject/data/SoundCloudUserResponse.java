@@ -1,48 +1,65 @@
 package com.cdk.skeletonproject.data;
 
-import io.realm.RealmList;
-import io.realm.RealmModel;
+import com.squareup.moshi.Json;
+
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
 
-@RealmClass
-public class SoundCloudUser implements RealmModel {
-
+public class SoundCloudUserResponse {
     @PrimaryKey
     private int id;
+    @Json(name = "kind")
     private String kind;
+    @Json(name = "permalink")
     private String permalink;
+    @Json(name = "username")
     private String username;
+    @Json(name = "last_modified")
     private String lastModified;
+    @Json(name = "uri")
     private String uri;
+    @Json(name = "permalink_url")
     private String permalinkUrl;
+    @Json(name = "avatar_url")
     private String avatarUrl;
+    @Json(name = "country")
     private String country;
+    @Json(name = "first_name")
     private String firstName;
+    @Json(name = "last_name")
     private String lastName;
+    @Json(name = "full_name")
     private String fullName;
+    @Json(name = "description")
     private String description;
+    @Json(name = "city")
     private String city;
+    @Json(name = "website")
     private String website;
+    @Json(name = "website_title")
     private String websiteTitle;
+    @Json(name = "track_count")
     private int trackCount;
+    @Json(name = "playlist_count")
     private int playlistCount;
+    @Json(name = "online")
     private boolean online;
+    @Json(name = "plan")
     private String plan;
+    @Json(name = "public_favorites_count")
     private int publicFavoritesCount;
+    @Json(name = "followers_count")
     private int followersCount;
+    @Json(name = "followings_count")
     private int followingsCount;
+    @Json(name = "reposts_count")
     private int repostsCount;
-    private RealmList<SoundCloudUser> followings;
-    private boolean isDefaultUser = false;
 
-    public static SoundCloudUser initialize(SoundCloudUserResponse soundCloudUserResponse) {
-        SoundCloudUser soundCloudUser = new SoundCloudUser();
-        soundCloudUser.id = soundCloudUserResponse.getId();
-        soundCloudUser.username = soundCloudUserResponse.getUsername();
-        soundCloudUser.avatarUrl = soundCloudUserResponse.getAvatarUrl();
-        return soundCloudUser;
-    }
+//    @Json(name = "subscriptions")
+//    private List<Object> subscriptions = null;
+//    @Json(name = "discogs_name")
+//    private Object discogsName;
+//    @Json(name = "myspace_name")
+//    private Object myspaceName;
 
     public int getId() {
         return id;
@@ -156,7 +173,6 @@ public class SoundCloudUser implements RealmModel {
         this.city = city;
     }
 
-
     public String getWebsite() {
         return website;
     }
@@ -235,21 +251,5 @@ public class SoundCloudUser implements RealmModel {
 
     public void setRepostsCount(int repostsCount) {
         this.repostsCount = repostsCount;
-    }
-
-    public RealmList<SoundCloudUser> getFollowings() {
-        return followings;
-    }
-
-    public void setFollowings(RealmList<SoundCloudUser> followings) {
-        this.followings = followings;
-    }
-
-    public void setDefaultUser(boolean defaultUser) {
-        isDefaultUser = defaultUser;
-    }
-
-    public boolean isDefaultUser() {
-        return isDefaultUser;
     }
 }

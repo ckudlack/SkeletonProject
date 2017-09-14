@@ -1,6 +1,7 @@
 package com.cdk.skeletonproject.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,8 @@ import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
+import com.cdk.skeletonproject.mvp.datasource.SoundCloudLocalDataSource;
+import com.cdk.skeletonproject.mvp.datasource.SoundCloudRemoteDataSource;
 import com.cdk.skeletonproject.mvp.presenter.SetUserPresenter;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
@@ -21,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class SetUserActivity extends AppCompatActivity implements SetUserContract.View, UsersAdapter.UserItemClickListener {
 
@@ -36,7 +40,7 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
 
         ButterKnife.bind(this);
 
-        presenter = new SetUserPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(Api.getNetworkService())));
+        initPresenter();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -45,6 +49,18 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
     void onClickButton() {
         final Editable text = userNameField.getText();
         presenter.buttonClicked(String.valueOf(text), getResources().getString(R.string.key));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @Override
@@ -74,6 +90,12 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
 
     @Override
     public void onItemClick(SoundCloudUser user) {
+        user.setDefaultUser(true);
+        presenter.setUserAsDefault(user);
+    }
 
+    @NonNull
+    private void initPresenter() {
+        presenter = new SetUserPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
     }
 }

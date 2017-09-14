@@ -1,11 +1,9 @@
 package com.cdk.skeletonproject.mvp.presenter;
 
-import com.cdk.skeletonproject.data.FollowingsResponse;
+import com.cdk.skeletonproject.DefaultSubscriber;
+import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
 import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
-
-import rx.Subscriber;
-import timber.log.Timber;
 
 public class MainPresenter implements MainContract.Presenter {
 
@@ -18,7 +16,7 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     public void onStop() {
-
+        useCase.clear();
     }
 
     @Override
@@ -28,12 +26,26 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onDestroy() {
+        useCase.closeRealm();
+    }
 
+    @Override
+    public void init() {
+        useCase.getDefaultUser(new DefaultSubscriber<SoundCloudUser>() {
+            @Override
+            public void onNext(SoundCloudUser soundCloudUser) {
+                if (soundCloudUser == null) {
+                    view.startUserSelectionActivity();
+                } else {
+
+                }
+            }
+        });
     }
 
     @Override
     public void buttonClicked(String userName, String clientId) {
-        useCase.findUserAndFollowing(userName, clientId, new Subscriber<FollowingsResponse>() {
+        /*useCase.findUserAndFollowing(userName, clientId, new Subscriber<FollowingsResponse>() {
             @Override
             public void onCompleted() {
 
@@ -48,6 +60,6 @@ public class MainPresenter implements MainContract.Presenter {
             public void onNext(FollowingsResponse soundCloudUsers) {
                 view.setUserList(soundCloudUsers.getUsers());
             }
-        });
+        });*/
     }
 }

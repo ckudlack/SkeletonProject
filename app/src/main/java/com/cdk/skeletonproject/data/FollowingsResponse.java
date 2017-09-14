@@ -7,11 +7,11 @@ import java.util.List;
 public class FollowingsResponse {
 
     @Json(name = "collection")
-    List<SoundCloudUser> users;
+    List<SoundCloudUserResponse> users;
     @Json(name = "next_href")
     String nextPageUrl;
 
-    public List<SoundCloudUser> getUsers() {
+    public List<SoundCloudUserResponse> getUsers() {
         return users;
     }
 
