@@ -1,7 +1,13 @@
 package com.cdk.skeletonproject.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +24,9 @@ import com.cdk.skeletonproject.mvp.presenter.MainPresenter;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
 import com.cdk.skeletonproject.network.Api;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -26,7 +35,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener {
+public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location> {
+
+    private static final int COARSE_LOCATION_PERMISSION_CODE = 9876;
 
     @BindView(R.id.users_list) RecyclerView recyclerView;
 
@@ -34,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private MainContract.Presenter presenter;
     private UsersAdapter adapter;
+    private FusedLocationProviderClient fusedLocationClient;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +54,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, this);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    COARSE_LOCATION_PERMISSION_CODE);
+        }
 
         presenter.init(clientKey);
     }
@@ -66,6 +88,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 123 && resultCode == RESULT_OK) {
             presenter.activityReturned(clientKey);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == COARSE_LOCATION_PERMISSION_CODE && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, this);
         }
     }
 
@@ -114,5 +144,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onItemClick(SoundCloudUser user) {
 
+    }
+
+    @Override
+    public void onSuccess(Location location) {
+        if (location != null) {
+            final double latitude = location.getLatitude();
+            final double longitude = location.getLongitude();
+
+            // TODO: Connect this information to SongKick
+        }
     }
 }
