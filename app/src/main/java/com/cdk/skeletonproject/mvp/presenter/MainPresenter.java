@@ -23,7 +23,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onStart() {
-
+        // no-op
     }
 
     @Override
@@ -33,9 +33,11 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void getDefaultUserFollowing(String clientId) {
+        view.showLoading();
         useCase.getDefaultUserFollowing(clientId, new DefaultSubscriber<List<SoundCloudUser>>() {
             @Override
             public void onNext(List<SoundCloudUser> followings) {
+                view.hideLoading();
                 if (followings == null) {
                     view.startUserSelectionActivity();
                 } else {
