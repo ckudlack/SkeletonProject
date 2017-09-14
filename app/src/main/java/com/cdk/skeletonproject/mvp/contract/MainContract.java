@@ -14,8 +14,6 @@ public interface MainContract {
     }
 
     interface Presenter extends BasePresenter {
-        void init(String clientId);
-        void activityReturned(String clientId);
-        void buttonClicked(String userName, String clientId);
+        void getDefaultUserFollowing(String clientId);
     }
 }

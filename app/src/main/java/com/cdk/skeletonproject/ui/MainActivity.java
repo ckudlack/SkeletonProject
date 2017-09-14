@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,11 +36,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location> {
+public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int COARSE_LOCATION_PERMISSION_CODE = 9876;
 
     @BindView(R.id.users_list) RecyclerView recyclerView;
+    @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     @BindString(R.string.key) String clientKey;
 
@@ -65,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     COARSE_LOCATION_PERMISSION_CODE);
         }
 
-        presenter.init(clientKey);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        presenter.getDefaultUserFollowing(clientKey);
     }
 
     @Override
@@ -87,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 123 && resultCode == RESULT_OK) {
-            presenter.activityReturned(clientKey);
+            presenter.getDefaultUserFollowing(clientKey);
         }
     }
 
@@ -113,17 +117,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void showLoading() {
-
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showError(Throwable error) {
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -154,5 +158,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
             // TODO: Connect this information to SongKick
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.getDefaultUserFollowing(clientKey);
     }
 }

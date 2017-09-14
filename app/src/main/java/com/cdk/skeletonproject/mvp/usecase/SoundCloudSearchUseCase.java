@@ -4,6 +4,8 @@ import com.cdk.skeletonproject.DefaultSubscriber;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 
+import rx.Observable;
+
 public class SoundCloudSearchUseCase extends UseCase {
 
     private SoundCloudDataContract.Repository repository;
@@ -29,7 +31,12 @@ public class SoundCloudSearchUseCase extends UseCase {
     }
 
     public void getDefaultUserFollowing(String clientId, DefaultSubscriber subscriber) {
-        execute(repository.getDefaultUser().flatMap(soundCloudUser -> soundCloudUser != null ? repository.getFollowing(soundCloudUser.getId(), clientId) : null), subscriber);
+        execute(repository.getDefaultUser().flatMap(soundCloudUser -> {
+            if (soundCloudUser != null && soundCloudUser.getFollowings().isEmpty()) {
+                return repository.getFollowing(soundCloudUser.getId(), clientId);
+            }
+            return Observable.just(soundCloudUser == null ? null : soundCloudUser.getFollowings());
+        }), subscriber);
     }
 
     public void closeRealm() {

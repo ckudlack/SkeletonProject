@@ -32,35 +32,16 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void init(String clientId) {
+    public void getDefaultUserFollowing(String clientId) {
         useCase.getDefaultUserFollowing(clientId, new DefaultSubscriber<List<SoundCloudUser>>() {
             @Override
-            public void onNext(List<SoundCloudUser> soundCloudUsers) {
-                if (soundCloudUsers == null) {
+            public void onNext(List<SoundCloudUser> followings) {
+                if (followings == null) {
                     view.startUserSelectionActivity();
                 } else {
-                    view.setUserList(soundCloudUsers);
+                    view.setUserList(followings);
                 }
             }
         });
-    }
-
-    @Override
-    public void activityReturned(String clientId) {
-        useCase.getDefaultUserFollowing(clientId, new DefaultSubscriber<List<SoundCloudUser>>() {
-            @Override
-            public void onNext(List<SoundCloudUser> soundCloudUsers) {
-                if (soundCloudUsers == null) {
-                    view.startUserSelectionActivity();
-                } else {
-                    view.setUserList(soundCloudUsers);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void buttonClicked(String userName, String clientId) {
-
     }
 }
