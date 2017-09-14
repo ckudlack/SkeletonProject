@@ -26,12 +26,14 @@ public class SoundCloudLocalDataSource implements SoundCloudDataContract.DataSou
 
     @Override
     public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
-        final SoundCloudUser user = realm.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
+        final Realm defaultInstance = Realm.getDefaultInstance();
+        final SoundCloudUser user = defaultInstance.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
         if (user == null) {
             return Observable.empty();
         }
 
-        final List<SoundCloudUser> followings = realm.copyFromRealm(user.getFollowings());
+        final List<SoundCloudUser> followings = defaultInstance.copyFromRealm(user.getFollowings());
+        defaultInstance.close();
         return Observable.just(followings);
     }
 

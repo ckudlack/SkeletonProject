@@ -1,5 +1,7 @@
 package com.cdk.skeletonproject.data;
 
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
@@ -241,8 +243,8 @@ public class SoundCloudUser implements RealmModel {
         return followings;
     }
 
-    public void setFollowings(RealmList<SoundCloudUser> followings) {
-        this.followings = followings;
+    public void setFollowings(List<SoundCloudUser> followings) {
+        this.followings.addAll(followings);
     }
 
     public void setDefaultUser(boolean defaultUser) {

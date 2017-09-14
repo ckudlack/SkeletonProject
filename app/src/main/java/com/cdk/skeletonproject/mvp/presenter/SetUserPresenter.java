@@ -23,7 +23,7 @@ public class SetUserPresenter implements SetUserContract.Presenter {
 
     @Override
     public void onStart() {
-
+        // no-op
     }
 
     @Override

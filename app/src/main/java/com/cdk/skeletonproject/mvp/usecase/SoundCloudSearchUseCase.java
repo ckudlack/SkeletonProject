@@ -28,6 +28,10 @@ public class SoundCloudSearchUseCase extends UseCase {
         execute(repository.getDefaultUser(), subscriber);
     }
 
+    public void getDefaultUserFollowing(String clientId, DefaultSubscriber subscriber) {
+        execute(repository.getDefaultUser().flatMap(soundCloudUser -> soundCloudUser != null ? repository.getFollowing(soundCloudUser.getId(), clientId) : null), subscriber);
+    }
+
     public void closeRealm() {
         repository.closeRealm();
     }

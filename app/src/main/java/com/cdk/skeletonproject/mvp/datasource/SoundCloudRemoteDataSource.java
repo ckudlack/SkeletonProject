@@ -37,11 +37,17 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
                 .toList()
                 .flatMap(soundCloudUsers -> {
                     try (Realm realm = Realm.getDefaultInstance()) {
-                        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(soundCloudUsers));
+                        realm.executeTransaction(realm1 -> {
+                            final SoundCloudUser user = realm1.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
+                            user.setFollowings(soundCloudUsers);
+                            realm1.insertOrUpdate(user);
+                        });
                     }
 
-                    final SoundCloudUser user = realm.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
-                    final List<SoundCloudUser> followings = realm.copyFromRealm(user.getFollowings());
+                    final Realm defaultInstance = Realm.getDefaultInstance();
+                    final SoundCloudUser user = defaultInstance.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
+                    final List<SoundCloudUser> followings = defaultInstance.copyFromRealm(user.getFollowings());
+                    defaultInstance.close();
                     return Observable.just(followings);
                 });
     }

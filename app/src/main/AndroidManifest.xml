@@ -17,8 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SetUserActivity">
-        </activity>
+        <activity
+            android:name=".ui.SetUserActivity"
+            android:label="Select a user"/>
     </application>
 
 </manifest>

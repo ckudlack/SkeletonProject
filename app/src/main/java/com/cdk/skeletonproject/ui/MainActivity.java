@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.widget.EditText;
 
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
@@ -21,15 +19,16 @@ import com.cdk.skeletonproject.network.Api;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener {
 
-    @BindView(R.id.username) EditText userNameField;
     @BindView(R.id.users_list) RecyclerView recyclerView;
+
+    @BindString(R.string.key) String clientKey;
 
     private MainContract.Presenter presenter;
     private UsersAdapter adapter;
@@ -42,7 +41,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        presenter.init();
+        presenter.init(clientKey);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            presenter.activityReturned(clientKey);
+        }
     }
 
     @Override
@@ -55,12 +61,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
-    }
-
-    @OnClick(R.id.button)
-    void onClickButton() {
-        final Editable text = userNameField.getText();
-        presenter.buttonClicked(String.valueOf(text), getResources().getString(R.string.key));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void startUserSelectionActivity() {
-        startActivity(new Intent(this, SetUserActivity.class));
+        startActivityForResult(new Intent(this, SetUserActivity.class), 123);
     }
 
     @Override
