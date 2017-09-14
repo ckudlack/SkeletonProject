@@ -89,6 +89,12 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
     }
 
     @Override
+    public void returnToFollowingsScreen() {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
     public void onItemClick(SoundCloudUser user) {
         user.setDefaultUser(true);
         presenter.setUserAsDefault(user);

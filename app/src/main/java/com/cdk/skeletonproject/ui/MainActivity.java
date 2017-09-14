@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
@@ -42,6 +44,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         presenter.init(clientKey);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_change_user:
+                startUserSelectionActivity();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -40,13 +40,8 @@ public class SoundCloudLocalDataSource implements SoundCloudDataContract.DataSou
     @Override
     public Observable<Void> setDefaultUser(SoundCloudUser user) {
         realm.executeTransaction(realm -> {
-            final SoundCloudUser defaultUser = realm.where(SoundCloudUser.class).equalTo("id", user.getId()).findFirst();
-            if (defaultUser != null) {
-                defaultUser.setDefaultUser(true);
-                realm.insertOrUpdate(defaultUser);
-            } else {
-                realm.insert(user);
-            }
+            realm.delete(SoundCloudUser.class);
+            realm.insert(user);
         });
         return Observable.just(null);
     }

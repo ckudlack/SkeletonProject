@@ -19,13 +19,7 @@ public class SoundCloudRepository implements SoundCloudDataContract.Repository {
 
     @Override
     public Observable<List<SoundCloudUser>> findUser(String userName, String clientId) {
-        return localDataSource.findUser(userName, clientId).flatMap(soundCloudUsers -> {
-            if (soundCloudUsers == null || soundCloudUsers.isEmpty()) {
-                final Observable<List<SoundCloudUser>> user = remoteDataSource.findUser(userName, clientId);
-                return user;
-            }
-            return Observable.just(soundCloudUsers);
-        });
+        return remoteDataSource.findUser(userName, clientId);
     }
 
     @Override

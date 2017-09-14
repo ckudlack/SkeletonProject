@@ -9,6 +9,7 @@ import java.util.List;
 public interface SetUserContract {
     interface View extends BaseView {
         void setUserList(List<SoundCloudUser> users);
+        void returnToFollowingsScreen();
     }
 
     interface Presenter extends BasePresenter {

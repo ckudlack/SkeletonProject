@@ -43,6 +43,11 @@ public class SetUserPresenter implements SetUserContract.Presenter {
 
     @Override
     public void setUserAsDefault(SoundCloudUser user) {
-        useCase.setDefaultUser(user, new DefaultSubscriber());
+        useCase.setDefaultUser(user, new DefaultSubscriber<Void>() {
+            @Override
+            public void onNext(Void aVoid) {
+                view.returnToFollowingsScreen();
+            }
+        });
     }
 }
