@@ -14,7 +14,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private static final int COARSE_LOCATION_PERMISSION_CODE = 9876;
 
+    @BindView(R.id.def_user_name) TextView userNameView;
+    @BindView(R.id.def_user_image) ImageView userAvatarView;
     @BindView(R.id.users_list) RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        presenter.getDefaultUserFollowing(clientKey);
+        presenter.getDefaultUser(clientKey);
     }
 
     @Override
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 123 && resultCode == RESULT_OK) {
-            presenter.getDefaultUserFollowing(clientKey);
+            presenter.getDefaultUser(clientKey);
         }
     }
 
@@ -143,6 +148,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void startUserSelectionActivity() {
         startActivityForResult(new Intent(this, SetUserActivity.class), 123);
+    }
+
+    @Override
+    public void setupUI(String username, String avatarUrl) {
+        userNameView.setText(username + " follows:");
+        Glide.with(this).load(avatarUrl).into(userAvatarView);
     }
 
     @Override

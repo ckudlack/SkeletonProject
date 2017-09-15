@@ -11,9 +11,11 @@ public interface MainContract {
     interface View extends BaseView {
         void setUserList(List<SoundCloudUser> users);
         void startUserSelectionActivity();
+        void setupUI(String username, String avatarUrl);
     }
 
     interface Presenter extends BasePresenter {
         void getDefaultUserFollowing(String clientId);
+        void getDefaultUser(String clientId);
     }
 }

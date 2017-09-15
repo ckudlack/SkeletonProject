@@ -38,10 +38,23 @@ public class MainPresenter implements MainContract.Presenter {
             @Override
             public void onNext(List<SoundCloudUser> followings) {
                 view.hideLoading();
-                if (followings == null) {
+                if (followings != null) {
+                    view.setUserList(followings);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getDefaultUser(String clientId) {
+        useCase.getDefaultUser(new DefaultSubscriber<SoundCloudUser>() {
+            @Override
+            public void onNext(SoundCloudUser soundCloudUser) {
+                if (soundCloudUser == null) {
                     view.startUserSelectionActivity();
                 } else {
-                    view.setUserList(followings);
+                    view.setupUI(soundCloudUser.getUsername(), soundCloudUser.getAvatarUrl());
+                    getDefaultUserFollowing(clientId);
                 }
             }
         });
