@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -67,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         initPresenter();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -158,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             adapter.update(users);
         }
 
-        presenter.getEventsForArtist(users.get(0).getFullName(), "geo:" + userLocation.getLatitude() + "," + userLocation.getLongitude(), songKickKey);
+        // This is just to test that all the layers are working
+//        presenter.getEventsForArtist(users.get(0).getFullName(), "geo:" + userLocation.getLatitude() + "," + userLocation.getLongitude(), songKickKey);
     }
 
     @Override
@@ -180,8 +181,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
-            final double latitude = location.getLatitude();
-            final double longitude = location.getLongitude();
 
             // TODO: Save this in Realm instead of in memory
             userLocation = location;
