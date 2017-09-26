@@ -3,7 +3,7 @@ package com.cdk.skeletonproject.mvp.datasource;
 import com.cdk.skeletonproject.data.FollowingsResponse;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
-import com.cdk.skeletonproject.network.NetworkService;
+import com.cdk.skeletonproject.network.SoundCloudService;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import rx.Observable;
 
 public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSource {
 
-    private NetworkService service;
+    private SoundCloudService service;
     private Realm realm;
 
-    public SoundCloudRemoteDataSource(NetworkService service) {
+    public SoundCloudRemoteDataSource(SoundCloudService service) {
         this.service = service;
         this.realm = Realm.getDefaultInstance();
     }

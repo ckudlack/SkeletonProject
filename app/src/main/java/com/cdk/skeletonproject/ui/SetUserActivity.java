@@ -12,11 +12,14 @@ import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
+import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
+import com.cdk.skeletonproject.mvp.datasource.SongKickRemoteDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudLocalDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudRemoteDataSource;
 import com.cdk.skeletonproject.mvp.presenter.SetUserPresenter;
+import com.cdk.skeletonproject.mvp.repository.SongKickRepository;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
-import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
+import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 import com.cdk.skeletonproject.network.Api;
 
 import java.util.List;
@@ -48,7 +51,7 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
     @OnClick(R.id.button)
     void onClickButton() {
         final Editable text = userNameField.getText();
-        presenter.buttonClicked(String.valueOf(text), getResources().getString(R.string.key));
+        presenter.buttonClicked(String.valueOf(text), getResources().getString(R.string.key_soundcloud));
     }
 
     @Override
@@ -102,6 +105,6 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
 
     @NonNull
     private void initPresenter() {
-        presenter = new SetUserPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
+        presenter = new SetUserPresenter(this, new MainUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getSoundCloudService())), new SongKickRepository(new SongKickLocalDataSource(), new SongKickRemoteDataSource(Api.getSongKickService()))));
     }
 }

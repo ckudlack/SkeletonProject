@@ -17,5 +17,6 @@ public interface MainContract {
     interface Presenter extends BasePresenter {
         void getDefaultUserFollowing(String clientId);
         void getDefaultUser(String clientId);
+        void getEventsForArtist(String artist, String location, String apiKey);
     }
 }

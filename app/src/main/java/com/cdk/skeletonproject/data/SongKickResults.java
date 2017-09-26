@@ -1,0 +1,14 @@
+package com.cdk.skeletonproject.data;
+
+import com.squareup.moshi.Json;
+
+import java.util.List;
+
+public class SongKickResults<T> {
+    @Json(name = "event")
+    public List<T> events = null;
+
+    public List<T> getResultsList() {
+        return events;
+    }
+}

@@ -12,6 +12,10 @@ public class SoundCloudUser implements RealmModel {
 
     @PrimaryKey
     private int id;
+
+    /* Added from SK */
+    private long songKickId;
+
     private String kind;
     private String permalink;
     private String username;

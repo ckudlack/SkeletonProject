@@ -10,7 +10,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-public interface NetworkService {
+public interface SoundCloudService {
 
     @GET("users")
     Observable<List<SoundCloudUserResponse>> findUser(@Query("client_id") String clientId, @Query("q") String userName);

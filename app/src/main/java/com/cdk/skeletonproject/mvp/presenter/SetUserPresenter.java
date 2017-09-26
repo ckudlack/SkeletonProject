@@ -3,16 +3,16 @@ package com.cdk.skeletonproject.mvp.presenter;
 import com.cdk.skeletonproject.DefaultSubscriber;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
-import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
+import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 
 import java.util.List;
 
 public class SetUserPresenter implements SetUserContract.Presenter {
 
     private SetUserContract.View view;
-    private SoundCloudSearchUseCase useCase;
+    private MainUseCase useCase;
 
-    public SetUserPresenter(SetUserContract.View view, SoundCloudSearchUseCase useCase) {
+    public SetUserPresenter(SetUserContract.View view, MainUseCase useCase) {
         this.view = view;
         this.useCase = useCase;
     }

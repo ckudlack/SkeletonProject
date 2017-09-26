@@ -17,33 +17,51 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 public final class Api {
 
     private static final String BASE_URL_SOUNDCLOUD = "https://api.soundcloud.com/";
+    private static final String BASE_URL_SONGKICK = "http://api.songkick.com/api/3.0/";
 
-    private static OkHttpClient okHttpClient;
     private static Moshi moshi;
-    private static NetworkService networkService;
+    private static SoundCloudService soundCloudService;
+    private static SongKickService songKickService;
 
     private Api() {
     }
 
-    public static NetworkService getNetworkService() {
-        if (networkService != null) {
-            return networkService;
+    public static SoundCloudService getSoundCloudService() {
+        if (soundCloudService != null) {
+            return soundCloudService;
         }
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        okHttpClient = createOkHttpClient().addInterceptor(logging).build();
-
-        networkService = new Retrofit.Builder()
-                .client(okHttpClient)
+        soundCloudService = new Retrofit.Builder()
+                .client(createOkHttpClient().addInterceptor(logging).build())
                 .baseUrl(BASE_URL_SOUNDCLOUD)
                 .addConverterFactory(MoshiConverterFactory.create(getMoshi()).asLenient())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build().create(NetworkService.class);
+                .build().create(SoundCloudService.class);
 
-        return networkService;
+        return soundCloudService;
+    }
+
+    public static SongKickService getSongKickService() {
+        if (songKickService != null) {
+            return songKickService;
+        }
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        songKickService = new Retrofit.Builder()
+                .client(createOkHttpClient().addInterceptor(logging).build())
+                .baseUrl(BASE_URL_SONGKICK)
+                .addConverterFactory(MoshiConverterFactory.create(getMoshi()).asLenient())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build().create(SongKickService.class);
+
+        return songKickService;
     }
 
     private static OkHttpClient.Builder createOkHttpClient() {

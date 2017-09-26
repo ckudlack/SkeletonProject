@@ -22,11 +22,14 @@ import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
+import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
+import com.cdk.skeletonproject.mvp.datasource.SongKickRemoteDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudLocalDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudRemoteDataSource;
 import com.cdk.skeletonproject.mvp.presenter.MainPresenter;
+import com.cdk.skeletonproject.mvp.repository.SongKickRepository;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
-import com.cdk.skeletonproject.mvp.usecase.SoundCloudSearchUseCase;
+import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 import com.cdk.skeletonproject.network.Api;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,18 +51,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @BindView(R.id.users_list) RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindString(R.string.key) String clientKey;
+    @BindString(R.string.key_soundcloud) String clientKey;
+    @BindString(R.string.key_songkick) String songKickKey;
 
     private MainContract.Presenter presenter;
     private UsersAdapter adapter;
     private FusedLocationProviderClient fusedLocationClient;
+
+    private Location userLocation = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        presenter = new MainPresenter(this, new SoundCloudSearchUseCase(new SoundCloudRepository(new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getNetworkService()))));
+        initPresenter();
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -75,6 +82,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         swipeRefreshLayout.setOnRefreshListener(this);
 
         presenter.getDefaultUser(clientKey);
+    }
+
+    private void initPresenter() {
+        presenter = new MainPresenter(this, new MainUseCase(
+                new SoundCloudRepository(
+                        new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getSoundCloudService())),
+                new SongKickRepository(new SongKickLocalDataSource(), new SongKickRemoteDataSource(Api.getSongKickService()))));
     }
 
     @Override
@@ -143,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else {
             adapter.update(users);
         }
+
+        presenter.getEventsForArtist(users.get(0).getFullName(), "geo:" + userLocation.getLatitude() + "," + userLocation.getLongitude(), songKickKey);
     }
 
     @Override
@@ -167,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             final double latitude = location.getLatitude();
             final double longitude = location.getLongitude();
 
-            // TODO: Connect this information to SongKick
+            // TODO: Save this in Realm instead of in memory
+            userLocation = location;
         }
     }
 
