@@ -54,7 +54,7 @@ public class MainPresenter implements MainContract.Presenter {
                 if (soundCloudUser == null) {
                     view.startUserSelectionActivity();
                 } else {
-                    view.setupUI(soundCloudUser.getUsername(), soundCloudUser.getAvatarUrl());
+//                    view.setupUI(soundCloudUser.getUsername(), soundCloudUser.getAvatarUrl());
                     getDefaultUserFollowing(clientId);
                 }
             }

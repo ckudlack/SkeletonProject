@@ -1,6 +1,7 @@
 package com.cdk.skeletonproject.ui;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +42,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location>, SwipeRefreshLayout.OnRefreshListener {
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private static final int COARSE_LOCATION_PERMISSION_CODE = 9876;
 
     @BindView(R.id.def_user_name) TextView userNameView;
-    @BindView(R.id.def_user_image) ImageView userAvatarView;
     @BindView(R.id.users_list) RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
@@ -133,6 +135,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         presenter.onDestroy();
     }
 
+    @OnClick(R.id.scan_button)
+    void scanButtonClicked() {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Start scanning?")
+                .setMessage("This will scan the artists you've selected to see if they're performing near you." +
+                        " Please double check that you have selected correctly")
+                .setPositiveButton("Continue", (dialogInterface, i) -> {
+                    //TODO: Scan some shit
+                    // start the scanning service
+                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                .create();
+
+        alertDialog.show();
+    }
+
     @Override
     public void showLoading() {
         swipeRefreshLayout.setRefreshing(true);
@@ -168,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void setupUI(String username, String avatarUrl) {
-        userNameView.setText(username + " follows:");
-        Glide.with(this).load(avatarUrl).into(userAvatarView);
+
     }
 
     @Override
