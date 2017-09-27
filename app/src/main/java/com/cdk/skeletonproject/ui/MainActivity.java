@@ -33,6 +33,7 @@ import com.cdk.skeletonproject.mvp.repository.SongKickRepository;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 import com.cdk.skeletonproject.network.Api;
+import com.cdk.skeletonproject.service.SoundCloudScanningService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -141,10 +142,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .setTitle("Start scanning?")
                 .setMessage("This will scan the artists you've selected to see if they're performing near you." +
                         " Please double check that you have selected correctly")
-                .setPositiveButton("Continue", (dialogInterface, i) -> {
-                    //TODO: Scan some shit
-                    // start the scanning service
-                })
+                .setPositiveButton("Continue", (dialogInterface, i) -> presenter.dialogContinueClicked())
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                 .create();
 
@@ -185,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void setupUI(String username, String avatarUrl) {
-
+    public void startScanningService() {
+        startService(new Intent(this, SoundCloudScanningService.class));
     }
 
     @Override
