@@ -16,5 +16,5 @@ public interface SoundCloudService {
     Observable<List<SoundCloudUserResponse>> findUser(@Query("client_id") String clientId, @Query("q") String userName);
 
     @GET("users/{id}/followings")
-    Observable<FollowingsResponse> getFollowing(@Path("id") long userId, @Query("client_id") String clientId);
+    Observable<FollowingsResponse> getFollowing(@Path("id") long userId, @Query("page_size") int pageSize, @Query("client_id") String clientId);
 }

@@ -3,7 +3,7 @@ package com.cdk.skeletonproject.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.widget.EditText;
@@ -45,7 +45,7 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
 
         initPresenter();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
     @OnClick(R.id.button)

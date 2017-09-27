@@ -30,7 +30,7 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
 
     @Override
     public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
-        return service.getFollowing(userId, clientId)
+        return service.getFollowing(userId, 1000, clientId)
                 .map(FollowingsResponse::getUsers)
                 .flatMap(Observable::from)
                 .map(SoundCloudUser::initialize)
