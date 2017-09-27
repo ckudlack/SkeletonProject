@@ -34,8 +34,8 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
                 .map(FollowingsResponse::getUsers)
                 .flatMap(Observable::from)
                 .map(SoundCloudUser::initialize)
-                .toList()
-                .flatMap(soundCloudUsers -> {
+                .toList();
+                /*.flatMap(soundCloudUsers -> {
                     try (Realm realm = Realm.getDefaultInstance()) {
                         realm.executeTransaction(realm1 -> {
                             final SoundCloudUser user = realm1.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
@@ -49,7 +49,7 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
                     final List<SoundCloudUser> followings = defaultInstance.copyFromRealm(user.getFollowings());
                     defaultInstance.close();
                     return Observable.just(followings);
-                });
+                });*/
     }
 
     @Override

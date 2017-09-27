@@ -41,6 +41,7 @@ public class SoundCloudUser implements RealmModel {
     private int repostsCount;
     private RealmList<SoundCloudUser> followings;
     private boolean isDefaultUser = false;
+    private boolean userIsSelected = true;
 
     public static SoundCloudUser initialize(SoundCloudUserResponse soundCloudUserResponse) {
         SoundCloudUser soundCloudUser = new SoundCloudUser();
@@ -257,5 +258,13 @@ public class SoundCloudUser implements RealmModel {
 
     public boolean isDefaultUser() {
         return isDefaultUser;
+    }
+
+    public boolean isUserSelected() {
+        return userIsSelected;
+    }
+
+    public void setUserIsSelected(boolean userIsSelected) {
+        this.userIsSelected = userIsSelected;
     }
 }

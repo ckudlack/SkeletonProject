@@ -34,4 +34,15 @@
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toTopOf="@id/avatar"
         tools:text="TextView"/>
+
+    <ImageView
+        android:id="@+id/check_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:src="@drawable/ic_done"
+        tools:layout_editor_absoluteX="0dp"
+        app:layout_constraintEnd_toEndOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@id/avatar"
+        tools:layout_editor_absoluteY="198dp"/>
 </android.support.constraint.ConstraintLayout>

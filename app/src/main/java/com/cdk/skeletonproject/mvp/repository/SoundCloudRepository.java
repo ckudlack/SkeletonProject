@@ -24,12 +24,14 @@ public class SoundCloudRepository implements SoundCloudDataContract.Repository {
 
     @Override
     public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
-        return localDataSource.getFollowing(userId, clientId).flatMap(soundCloudUsers -> {
+        return remoteDataSource.getFollowing(userId, clientId);
+
+        /*return localDataSource.getFollowing(userId, clientId).flatMap(soundCloudUsers -> {
             if (soundCloudUsers == null || soundCloudUsers.isEmpty()) {
                 return remoteDataSource.getFollowing(userId, clientId);
             }
             return Observable.just(soundCloudUsers);
-        });
+        });*/
     }
 
     @Override

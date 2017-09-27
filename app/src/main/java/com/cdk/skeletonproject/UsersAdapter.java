@@ -31,7 +31,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         userViewHolder.itemView.setOnClickListener(view -> {
             final int position = userViewHolder.getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                itemClickListener.onItemClick(users.get(position));
+                final SoundCloudUser soundCloudUser = users.get(position);
+                soundCloudUser.setUserIsSelected(!soundCloudUser.isUserSelected());
+                notifyItemChanged(position);
+                itemClickListener.onItemClick(soundCloudUser);
             }
         });
         return userViewHolder;
@@ -41,6 +44,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     public void onBindViewHolder(UserViewHolder holder, int position) {
         final SoundCloudUser soundCloudUser = users.get(position);
         holder.bind(soundCloudUser.getAvatarUrl(), soundCloudUser.getUsername());
+        holder.setCheckVisibility(soundCloudUser.isUserSelected());
     }
 
     @Override
@@ -58,6 +62,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
         @BindView(R.id.avatar) ImageView avatar;
         @BindView(R.id.username) TextView userName;
+        @BindView(R.id.check_mark) ImageView checkMark;
 
         public UserViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +72,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         public void bind(String avatarUrl, String user) {
             Glide.with(this.itemView.getContext()).load(avatarUrl).into(avatar);
             userName.setText(user);
+        }
+
+        public void setCheckVisibility(boolean isSelected) {
+            checkMark.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
