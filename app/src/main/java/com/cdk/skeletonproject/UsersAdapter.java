@@ -58,6 +58,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         notifyDataSetChanged();
     }
 
+    public List<SoundCloudUser> getUsers() {
+        return users;
+    }
+
     public static class UserViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.avatar) ImageView avatar;

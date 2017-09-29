@@ -1,11 +1,11 @@
 package com.cdk.skeletonproject.ui;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,10 +16,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
 import com.cdk.skeletonproject.data.SoundCloudUser;
@@ -38,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
@@ -184,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void startScanningService() {
-        startService(new Intent(this, SoundCloudScanningService.class));
+        startService(new Intent(this, SoundCloudScanningService.class)
+                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) adapter.getUsers()));
     }
 
     @Override

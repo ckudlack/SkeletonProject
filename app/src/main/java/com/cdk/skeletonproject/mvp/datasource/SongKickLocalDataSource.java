@@ -6,6 +6,7 @@ import com.cdk.skeletonproject.mvp.contract.SongKickDataContract;
 
 import java.util.List;
 
+import io.realm.Realm;
 import rx.Observable;
 
 public class SongKickLocalDataSource implements SongKickDataContract.DataSource {
@@ -37,5 +38,13 @@ public class SongKickLocalDataSource implements SongKickDataContract.DataSource 
     @Override
     public boolean dataAvailable() {
         return false;
+    }
+
+    @Override
+    public Observable<Void> setEventsForArtist(List<SongKickEvent> events) {
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.close();
+        return null;
     }
 }

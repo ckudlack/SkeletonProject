@@ -22,5 +22,6 @@ public interface SongKickDataContract {
         Observable<List<SongKickEvent>> getEventsForArtist(long artistId, String apiKey);
         Observable<List<SongKickEvent>> getEventsForArtist(String artistName, String location, String apiKey);
         boolean dataAvailable();
+        Observable<Void> setEventsForArtist(List<SongKickEvent> events);
     }
 }

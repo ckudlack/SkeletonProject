@@ -1,7 +1,10 @@
 package com.cdk.skeletonproject.data;
 
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class Venue {
+@RealmClass
+public class Venue implements RealmModel {
 
     private Double lat;
     private Double lng;

@@ -1,13 +1,15 @@
 package com.cdk.skeletonproject.data;
 
-import com.google.android.gms.maps.model.LatLng;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class SongKickEvent {
+@RealmClass
+public class SongKickEvent implements RealmModel {
 
     private String type;
     private String ageRestriction;
     private String status;
-    private LatLng location;
+//    private LatLng location;
     private String locationName;
     private String eventUri;
     private float popularity;
@@ -21,8 +23,8 @@ public class SongKickEvent {
         event.type = songKickEventResponse.getType();
         event.ageRestriction = songKickEventResponse.getAgeRestriction();
         event.status = songKickEventResponse.getStatus();
-        final LocationResponse location = songKickEventResponse.getLocation();
-        event.location = new LatLng(location.getLat(), location.getLng());
+        /*final LocationResponse location = songKickEventResponse.getLocation();
+        event.location = new LatLng(location.getLat(), location.getLng());*/
         event.locationName = songKickEventResponse.getLocation().getCity();
         event.eventUri = songKickEventResponse.getUri();
         event.popularity = songKickEventResponse.getPopularity();
@@ -45,9 +47,9 @@ public class SongKickEvent {
         return status;
     }
 
-    public LatLng getLocation() {
+/*    public LatLng getLocation() {
         return location;
-    }
+    }*/
 
     public String getLocationName() {
         return locationName;

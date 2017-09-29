@@ -53,4 +53,9 @@ public class SongKickRemoteDataSource implements SongKickDataContract.DataSource
     public boolean dataAvailable() {
         return true;
     }
+
+    @Override
+    public Observable<Void> setEventsForArtist(List<SongKickEvent> events) {
+        return null;
+    }
 }

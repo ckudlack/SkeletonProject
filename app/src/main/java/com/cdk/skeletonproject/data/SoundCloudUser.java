@@ -144,7 +144,6 @@ public class SoundCloudUser implements RealmModel, Parcelable {
         this.avatarUrl = in.readString();
         this.fullName = in.readString();
         this.followingsCount = in.readInt();
-        in.readList(this.followings, SoundCloudUser.class.getClassLoader());
         this.isDefaultUser = in.readByte() != 0;
         this.userIsSelected = in.readByte() != 0;
     }
