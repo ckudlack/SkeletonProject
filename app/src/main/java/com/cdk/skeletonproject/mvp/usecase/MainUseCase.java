@@ -1,7 +1,7 @@
 package com.cdk.skeletonproject.mvp.usecase;
 
 import com.cdk.skeletonproject.DefaultSubscriber;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SongKickDataContract;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 
@@ -25,7 +25,7 @@ public class MainUseCase extends UseCase {
         execute(soundCloudRepository.getFollowing(userId, clientId), subscriber);
     }
 
-    public void setDefaultUser(SoundCloudUser user, DefaultSubscriber subscriber) {
+    public void setDefaultUser(Artist user, DefaultSubscriber subscriber) {
         execute(soundCloudRepository.setDefaultUser(user), subscriber);
     }
 
@@ -40,10 +40,6 @@ public class MainUseCase extends UseCase {
             }
             return Observable.just(soundCloudUser == null ? null : soundCloudUser.getFollowings());
         }), subscriber);
-    }
-
-    public void getEventsForArtist(String artistName, String location, String apiKey, DefaultSubscriber subscriber) {
-        execute(songKickRepository.getEventsForArtist(artistName, location, apiKey), subscriber);
     }
 
     public void closeRealm() {

@@ -1,7 +1,7 @@
 package com.cdk.skeletonproject.mvp.datasource;
 
 import com.cdk.skeletonproject.data.FollowingsResponse;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 import com.cdk.skeletonproject.network.SoundCloudService;
 
@@ -21,44 +21,29 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
     }
 
     @Override
-    public Observable<List<SoundCloudUser>> findUser(String userName, String clientId) {
+    public Observable<List<Artist>> findUser(String userName, String clientId) {
         return service.findUser(clientId, userName)
                 .flatMap(Observable::from)
-                .map(SoundCloudUser::initialize)
+                .map(Artist::initialize)
                 .toList();
     }
 
     @Override
-    public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
+    public Observable<List<Artist>> getFollowing(long userId, String clientId) {
         return service.getFollowing(userId, 1000, clientId)
                 .map(FollowingsResponse::getUsers)
                 .flatMap(Observable::from)
-                .map(SoundCloudUser::initialize)
+                .map(Artist::initialize)
                 .toList();
-                /*.flatMap(soundCloudUsers -> {
-                    try (Realm realm = Realm.getDefaultInstance()) {
-                        realm.executeTransaction(realm1 -> {
-                            final SoundCloudUser user = realm1.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
-                            user.setFollowings(soundCloudUsers);
-                            realm1.insertOrUpdate(user);
-                        });
-                    }
-
-                    final Realm defaultInstance = Realm.getDefaultInstance();
-                    final SoundCloudUser user = defaultInstance.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
-                    final List<SoundCloudUser> followings = defaultInstance.copyFromRealm(user.getFollowings());
-                    defaultInstance.close();
-                    return Observable.just(followings);
-                });*/
     }
 
     @Override
-    public Observable<Void> setDefaultUser(SoundCloudUser user) {
+    public Observable<Void> setDefaultUser(Artist user) {
         return null;
     }
 
     @Override
-    public Observable<SoundCloudUser> getDefaultUser() {
+    public Observable<Artist> getDefaultUser() {
         return null;
     }
 

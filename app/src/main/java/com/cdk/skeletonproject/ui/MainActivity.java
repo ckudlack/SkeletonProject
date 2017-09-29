@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
 import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SongKickRemoteDataSource;
@@ -164,16 +164,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void setUserList(List<SoundCloudUser> users) {
+    public void setUserList(List<Artist> users) {
         if (adapter == null) {
             adapter = new UsersAdapter(users, this);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.update(users);
         }
-
-        // This is just to test that all the layers are working
-//        presenter.getEventsForArtist(users.get(0).getFullName(), "geo:" + userLocation.getLatitude() + "," + userLocation.getLongitude(), songKickKey);
     }
 
     @Override
@@ -184,11 +181,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void startScanningService() {
         startService(new Intent(this, SoundCloudScanningService.class)
-                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) adapter.getUsers()));
+                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) adapter.getSelectedUsers()));
     }
 
     @Override
-    public void onItemClick(SoundCloudUser user) {
+    public void onItemClick(Artist user) {
 
     }
 

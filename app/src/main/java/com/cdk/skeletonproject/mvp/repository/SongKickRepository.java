@@ -1,6 +1,6 @@
 package com.cdk.skeletonproject.mvp.repository;
 
-import com.cdk.skeletonproject.data.SongKickArtist;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.data.SongKickEvent;
 import com.cdk.skeletonproject.mvp.contract.SongKickDataContract;
 
@@ -10,26 +10,31 @@ import rx.Observable;
 
 public class SongKickRepository implements SongKickDataContract.Repository {
 
-    private SongKickDataContract.DataSource localDataSource;
-    private SongKickDataContract.DataSource remoteDataSource;
+    private SongKickDataContract.LocalDataSource localDataSource;
+    private SongKickDataContract.RemoteDataSource remoteRemoteDataSource;
 
-    public SongKickRepository(SongKickDataContract.DataSource localDataSource, SongKickDataContract.DataSource remoteDataSource) {
+    public SongKickRepository(SongKickDataContract.LocalDataSource localDataSource, SongKickDataContract.RemoteDataSource remoteRemoteDataSource) {
         this.localDataSource = localDataSource;
-        this.remoteDataSource = remoteDataSource;
+        this.remoteRemoteDataSource = remoteRemoteDataSource;
     }
 
     @Override
-    public Observable<List<SongKickArtist>> getArtists(String artistName, String apiKey) {
-        return remoteDataSource.getArtists(artistName, apiKey);
+    public Observable<List<Artist>> getArtists(String apiKey) {
+        return localDataSource.getArtists(apiKey);
+    }
+
+    @Override
+    public Observable<Artist> getArtist(long id, String apiKey) {
+        return null;
     }
 
     @Override
     public Observable<List<SongKickEvent>> getEventsForArtist(long artistId, String apiKey) {
-        return remoteDataSource.getEventsForArtist(artistId, apiKey);
+        return remoteRemoteDataSource.getEventsForArtist(artistId, apiKey);
     }
 
     @Override
-    public Observable<List<SongKickEvent>> getEventsForArtist(String artistName, String location, String apiKey) {
-        return remoteDataSource.getEventsForArtist(artistName, location, apiKey);
+    public Observable<List<SongKickEvent>> getEventsForArtist(Artist artist, String location, String apiKey) {
+        return remoteRemoteDataSource.getEventsForArtist(artist, location, apiKey).doOnNext(events -> localDataSource.setArtist(artist));
     }
 }

@@ -1,8 +1,8 @@
 package com.cdk.skeletonproject.mvp.presenter;
 
 import com.cdk.skeletonproject.DefaultSubscriber;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.data.SongKickEvent;
-import com.cdk.skeletonproject.data.SoundCloudUser;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
 import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 
@@ -35,9 +35,9 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void getDefaultUserFollowing(String clientId) {
         view.showLoading();
-        useCase.getDefaultUserFollowing(clientId, new DefaultSubscriber<List<SoundCloudUser>>() {
+        useCase.getDefaultUserFollowing(clientId, new DefaultSubscriber<List<Artist>>() {
             @Override
-            public void onNext(List<SoundCloudUser> followings) {
+            public void onNext(List<Artist> followings) {
                 view.hideLoading();
                 if (followings != null) {
                     view.setUserList(followings);
@@ -48,10 +48,10 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void getDefaultUser(String clientId) {
-        useCase.getDefaultUser(new DefaultSubscriber<SoundCloudUser>() {
+        useCase.getDefaultUser(new DefaultSubscriber<Artist>() {
             @Override
-            public void onNext(SoundCloudUser soundCloudUser) {
-                if (soundCloudUser == null) {
+            public void onNext(Artist artist) {
+                if (artist == null) {
                     view.startUserSelectionActivity();
                 } else {
                     getDefaultUserFollowing(clientId);
@@ -62,17 +62,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void getEventsForArtist(String artist, String location, String apiKey) {
-        useCase.getEventsForArtist(artist, location, apiKey, new DefaultSubscriber<List<SongKickEvent>>() {
-            @Override
-            public void onNext(List<SongKickEvent> songKickEvents) {
-                final int size = songKickEvents.size();
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-            }
-        });
     }
 
     @Override

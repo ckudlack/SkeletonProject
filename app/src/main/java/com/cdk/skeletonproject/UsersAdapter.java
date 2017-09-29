@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import butterknife.ButterKnife;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
-    private List<SoundCloudUser> users = new ArrayList<>();
+    private List<Artist> users = new ArrayList<>();
     private UserItemClickListener itemClickListener;
 
-    public UsersAdapter(List<SoundCloudUser> users, UserItemClickListener itemClickListener) {
+    public UsersAdapter(List<Artist> users, UserItemClickListener itemClickListener) {
         this.users.addAll(users);
         this.itemClickListener = itemClickListener;
     }
@@ -31,10 +31,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         userViewHolder.itemView.setOnClickListener(view -> {
             final int position = userViewHolder.getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                final SoundCloudUser soundCloudUser = users.get(position);
-                soundCloudUser.setUserIsSelected(!soundCloudUser.isUserSelected());
+                final Artist artist = users.get(position);
+                artist.setUserIsSelected(!artist.isUserSelected());
                 notifyItemChanged(position);
-                itemClickListener.onItemClick(soundCloudUser);
+                itemClickListener.onItemClick(artist);
             }
         });
         return userViewHolder;
@@ -42,9 +42,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
-        final SoundCloudUser soundCloudUser = users.get(position);
-        holder.bind(soundCloudUser.getAvatarUrl(), soundCloudUser.getUsername());
-        holder.setCheckVisibility(soundCloudUser.isUserSelected());
+        final Artist artist = users.get(position);
+        holder.bind(artist.getAvatarUrl(), artist.getUsername());
+        holder.setCheckVisibility(artist.isUserSelected());
     }
 
     @Override
@@ -52,14 +52,23 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return users.size();
     }
 
-    public void update(List<SoundCloudUser> users) {
+    public void update(List<Artist> users) {
         this.users.clear();
         this.users.addAll(users);
         notifyDataSetChanged();
     }
 
-    public List<SoundCloudUser> getUsers() {
-        return users;
+    // TODO: Use RX
+    public List<Artist> getSelectedUsers() {
+        List<Artist> selectedUsers = new ArrayList<>();
+
+        for (Artist user : users) {
+            if (user.isUserSelected()) {
+                selectedUsers.add(user);
+            }
+        }
+
+        return selectedUsers;
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
@@ -84,6 +93,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     }
 
     public interface UserItemClickListener {
-        void onItemClick(SoundCloudUser user);
+        void onItemClick(Artist user);
     }
 }

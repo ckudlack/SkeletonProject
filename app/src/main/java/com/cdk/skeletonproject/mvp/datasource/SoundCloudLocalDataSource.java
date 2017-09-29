@@ -1,6 +1,6 @@
 package com.cdk.skeletonproject.mvp.datasource;
 
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 
 import java.util.List;
@@ -18,37 +18,37 @@ public class SoundCloudLocalDataSource implements SoundCloudDataContract.DataSou
     }
 
     @Override
-    public Observable<List<SoundCloudUser>> findUser(String userName, String clientId) {
-        final RealmResults<SoundCloudUser> results = realm.where(SoundCloudUser.class).findAll();
-        final List<SoundCloudUser> soundCloudUsers = realm.copyFromRealm(results);
-        return Observable.just(soundCloudUsers);
+    public Observable<List<Artist>> findUser(String userName, String clientId) {
+        final RealmResults<Artist> results = realm.where(Artist.class).findAll();
+        final List<Artist> artists = realm.copyFromRealm(results);
+        return Observable.just(artists);
     }
 
     @Override
-    public Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId) {
+    public Observable<List<Artist>> getFollowing(long userId, String clientId) {
         final Realm defaultInstance = Realm.getDefaultInstance();
-        final SoundCloudUser user = defaultInstance.where(SoundCloudUser.class).equalTo("id", userId).findFirst();
+        final Artist user = defaultInstance.where(Artist.class).equalTo("id", userId).findFirst();
         if (user == null) {
             return Observable.empty();
         }
 
-        final List<SoundCloudUser> followings = defaultInstance.copyFromRealm(user.getFollowings());
+        final List<Artist> followings = defaultInstance.copyFromRealm(user.getFollowings());
         defaultInstance.close();
         return Observable.just(followings);
     }
 
     @Override
-    public Observable<Void> setDefaultUser(SoundCloudUser user) {
+    public Observable<Void> setDefaultUser(Artist user) {
         realm.executeTransaction(realm -> {
-            realm.delete(SoundCloudUser.class);
+            realm.delete(Artist.class);
             realm.insert(user);
         });
         return Observable.just(null);
     }
 
     @Override
-    public Observable<SoundCloudUser> getDefaultUser() {
-        final SoundCloudUser defaultUser = realm.where(SoundCloudUser.class).equalTo("isDefaultUser", true).findFirst();
+    public Observable<Artist> getDefaultUser() {
+        final Artist defaultUser = realm.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
         return defaultUser == null ? Observable.just(null) : Observable.just(realm.copyFromRealm(defaultUser));
     }
 

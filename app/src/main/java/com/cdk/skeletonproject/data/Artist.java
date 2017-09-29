@@ -10,7 +10,7 @@ import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class SoundCloudUser implements RealmModel, Parcelable {
+public class Artist implements RealmModel, Parcelable {
 
     private int id;
     private String username;
@@ -19,20 +19,21 @@ public class SoundCloudUser implements RealmModel, Parcelable {
     private String avatarUrl;
     private String fullName;
     private int followingsCount;
-    private RealmList<SoundCloudUser> followings;
+    private RealmList<Artist> followings;
+    private RealmList<SongKickEvent> events;
     private boolean isDefaultUser = false;
     private boolean userIsSelected = true;
 
-    public static SoundCloudUser initialize(SoundCloudUserResponse soundCloudUserResponse) {
-        SoundCloudUser soundCloudUser = new SoundCloudUser();
-        soundCloudUser.id = soundCloudUserResponse.getId();
-        soundCloudUser.username = soundCloudUserResponse.getUsername();
-        soundCloudUser.avatarUrl = soundCloudUserResponse.getAvatarUrl();
-        soundCloudUser.uri = soundCloudUserResponse.getUri();
-        soundCloudUser.followingsCount = soundCloudUserResponse.getFollowingsCount();
-        soundCloudUser.permalinkUrl = soundCloudUserResponse.getPermalinkUrl();
-        soundCloudUser.fullName = soundCloudUserResponse.getFullName();
-        return soundCloudUser;
+    public static Artist initialize(SoundCloudUserResponse soundCloudUserResponse) {
+        Artist artist = new Artist();
+        artist.id = soundCloudUserResponse.getId();
+        artist.username = soundCloudUserResponse.getUsername();
+        artist.avatarUrl = soundCloudUserResponse.getAvatarUrl();
+        artist.uri = soundCloudUserResponse.getUri();
+        artist.followingsCount = soundCloudUserResponse.getFollowingsCount();
+        artist.permalinkUrl = soundCloudUserResponse.getPermalinkUrl();
+        artist.fullName = soundCloudUserResponse.getFullName();
+        return artist;
     }
 
     public int getId() {
@@ -91,11 +92,11 @@ public class SoundCloudUser implements RealmModel, Parcelable {
         this.followingsCount = followingsCount;
     }
 
-    public RealmList<SoundCloudUser> getFollowings() {
+    public RealmList<Artist> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(List<SoundCloudUser> followings) {
+    public void setFollowings(List<Artist> followings) {
         this.followings.addAll(followings);
     }
 
@@ -113,6 +114,15 @@ public class SoundCloudUser implements RealmModel, Parcelable {
 
     public void setUserIsSelected(boolean userIsSelected) {
         this.userIsSelected = userIsSelected;
+    }
+
+    public List<SongKickEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<SongKickEvent> events) {
+        this.events.clear();
+        this.events.addAll(events);
     }
 
     @Override
@@ -133,10 +143,10 @@ public class SoundCloudUser implements RealmModel, Parcelable {
         dest.writeByte(this.userIsSelected ? (byte) 1 : (byte) 0);
     }
 
-    public SoundCloudUser() {
+    public Artist() {
     }
 
-    protected SoundCloudUser(Parcel in) {
+    protected Artist(Parcel in) {
         this.id = in.readInt();
         this.username = in.readString();
         this.uri = in.readString();
@@ -148,15 +158,15 @@ public class SoundCloudUser implements RealmModel, Parcelable {
         this.userIsSelected = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<SoundCloudUser> CREATOR = new Parcelable.Creator<SoundCloudUser>() {
+    public static final Parcelable.Creator<Artist> CREATOR = new Parcelable.Creator<Artist>() {
         @Override
-        public SoundCloudUser createFromParcel(Parcel source) {
-            return new SoundCloudUser(source);
+        public Artist createFromParcel(Parcel source) {
+            return new Artist(source);
         }
 
         @Override
-        public SoundCloudUser[] newArray(int size) {
-            return new SoundCloudUser[size];
+        public Artist[] newArray(int size) {
+            return new Artist[size];
         }
     };
 }

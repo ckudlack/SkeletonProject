@@ -1,7 +1,7 @@
 package com.cdk.skeletonproject.mvp.presenter;
 
 import com.cdk.skeletonproject.DefaultSubscriber;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
 import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 
@@ -33,16 +33,16 @@ public class SetUserPresenter implements SetUserContract.Presenter {
 
     @Override
     public void buttonClicked(String userName, String clientId) {
-        useCase.findUser(userName, clientId, new DefaultSubscriber<List<SoundCloudUser>>() {
+        useCase.findUser(userName, clientId, new DefaultSubscriber<List<Artist>>() {
             @Override
-            public void onNext(List<SoundCloudUser> soundCloudUsers) {
-                view.setUserList(soundCloudUsers);
+            public void onNext(List<Artist> artists) {
+                view.setUserList(artists);
             }
         });
     }
 
     @Override
-    public void setUserAsDefault(SoundCloudUser user) {
+    public void setUserAsDefault(Artist user) {
         useCase.setDefaultUser(user, new DefaultSubscriber<Void>() {
             @Override
             public void onNext(Void aVoid) {

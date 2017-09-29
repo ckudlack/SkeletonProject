@@ -1,6 +1,6 @@
 package com.cdk.skeletonproject.mvp.contract;
 
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.datasource.BaseDataSource;
 import com.cdk.skeletonproject.mvp.repository.BaseRepository;
 
@@ -11,24 +11,24 @@ import rx.Observable;
 public interface SoundCloudDataContract {
 
     interface Repository extends BaseRepository {
-        Observable<List<SoundCloudUser>> findUser(String userName, String clientId);
+        Observable<List<Artist>> findUser(String userName, String clientId);
 
-        Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId);
+        Observable<List<Artist>> getFollowing(long userId, String clientId);
 
-        Observable<Void> setDefaultUser(SoundCloudUser user);
+        Observable<Void> setDefaultUser(Artist user);
 
-        Observable<SoundCloudUser> getDefaultUser();
+        Observable<Artist> getDefaultUser();
 
         void closeRealm();
     }
 
     interface DataSource extends BaseDataSource {
-        Observable<List<SoundCloudUser>> findUser(String userName, String clientId);
+        Observable<List<Artist>> findUser(String userName, String clientId);
 
-        Observable<List<SoundCloudUser>> getFollowing(long userId, String clientId);
+        Observable<List<Artist>> getFollowing(long userId, String clientId);
 
-        Observable<Void> setDefaultUser(SoundCloudUser user);
+        Observable<Void> setDefaultUser(Artist user);
 
-        Observable<SoundCloudUser> getDefaultUser();
+        Observable<Artist> getDefaultUser();
     }
 }

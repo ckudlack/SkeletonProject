@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.UsersAdapter;
-import com.cdk.skeletonproject.data.SoundCloudUser;
+import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
 import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SongKickRemoteDataSource;
@@ -82,7 +82,7 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
     }
 
     @Override
-    public void setUserList(List<SoundCloudUser> users) {
+    public void setUserList(List<Artist> users) {
         if (adapter == null) {
             adapter = new UsersAdapter(users, this);
             recyclerView.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class SetUserActivity extends AppCompatActivity implements SetUserContrac
     }
 
     @Override
-    public void onItemClick(SoundCloudUser user) {
+    public void onItemClick(Artist user) {
         user.setDefaultUser(true);
         presenter.setUserAsDefault(user);
     }
