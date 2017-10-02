@@ -16,9 +16,12 @@ public interface SongKickDataContract {
 
         Observable<Artist> getArtist(long id, String apiKey);
 
+        Observable<List<Artist>> getArtistsWithEvents(String apiKey);
+
         Observable<List<SongKickEvent>> getEventsForArtist(long artistId, String apiKey);
 
         Observable<List<SongKickEvent>> getEventsForArtist(Artist artist, String location, String apiKey);
+
     }
 
     interface RemoteDataSource extends BaseDataSource {
@@ -28,7 +31,7 @@ public interface SongKickDataContract {
     }
 
     interface LocalDataSource extends BaseDataSource {
-        Observable<List<Artist>> getArtists(String apiKey);
+        Observable<List<Artist>> getArtists(boolean hasEvents, String apiKey);
 
         Observable<Artist> getArtist(long id, String apiKey);
 

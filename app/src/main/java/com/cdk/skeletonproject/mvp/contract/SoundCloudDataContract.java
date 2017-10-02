@@ -19,6 +19,8 @@ public interface SoundCloudDataContract {
 
         Observable<Artist> getDefaultUser();
 
+        Observable<Void> setFollowings(List<Artist> artists);
+
         void closeRealm();
     }
 
@@ -30,5 +32,7 @@ public interface SoundCloudDataContract {
         Observable<Void> setDefaultUser(Artist user);
 
         Observable<Artist> getDefaultUser();
+
+        Observable<Void> setFollowings(List<Artist> artists);
     }
 }

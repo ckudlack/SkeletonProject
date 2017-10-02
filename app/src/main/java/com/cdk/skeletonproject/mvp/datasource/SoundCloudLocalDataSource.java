@@ -53,6 +53,16 @@ public class SoundCloudLocalDataSource implements SoundCloudDataContract.DataSou
     }
 
     @Override
+    public Observable<Void> setFollowings(List<Artist> artists) {
+        realm.executeTransaction(realm -> {
+            final Artist defaultUser = realm.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
+            defaultUser.setFollowings(artists);
+            realm.insert(defaultUser);
+        });
+        return Observable.just(null);
+    }
+
+    @Override
     public void close() {
         realm.close();
     }

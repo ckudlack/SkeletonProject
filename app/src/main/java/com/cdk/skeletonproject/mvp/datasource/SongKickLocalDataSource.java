@@ -23,10 +23,11 @@ public class SongKickLocalDataSource implements SongKickDataContract.LocalDataSo
     }
 
     @Override
-    public Observable<List<Artist>> getArtists(String apiKey) {
-        Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Artist> all = realm.where(Artist.class).findAll();
+    public Observable<List<Artist>> getArtists(boolean hasEvents, String apiKey) {
         List<Artist> artists = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+
+        final RealmResults<Artist> all = hasEvents ? realm.where(Artist.class).equalTo("hasEvents", true).findAll() : realm.where(Artist.class).findAll();
         artists.addAll(realm.copyFromRealm(all));
         realm.close();
         return Observable.just(artists);

@@ -38,6 +38,11 @@ public class SoundCloudRepository implements SoundCloudDataContract.Repository {
     }
 
     @Override
+    public Observable<Void> setFollowings(List<Artist> artists) {
+        return localDataSource.setFollowings(artists);
+    }
+
+    @Override
     public void closeRealm() {
         localDataSource.close();
         remoteDataSource.close();

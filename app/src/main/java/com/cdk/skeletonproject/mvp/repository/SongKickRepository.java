@@ -20,12 +20,17 @@ public class SongKickRepository implements SongKickDataContract.Repository {
 
     @Override
     public Observable<List<Artist>> getArtists(String apiKey) {
-        return localDataSource.getArtists(apiKey);
+        return localDataSource.getArtists(false, apiKey);
     }
 
     @Override
     public Observable<Artist> getArtist(long id, String apiKey) {
         return null;
+    }
+
+    @Override
+    public Observable<List<Artist>> getArtistsWithEvents(String apiKey) {
+        return localDataSource.getArtists(true, apiKey);
     }
 
     @Override
@@ -35,6 +40,9 @@ public class SongKickRepository implements SongKickDataContract.Repository {
 
     @Override
     public Observable<List<SongKickEvent>> getEventsForArtist(Artist artist, String location, String apiKey) {
-        return remoteRemoteDataSource.getEventsForArtist(artist, location, apiKey).doOnNext(events -> localDataSource.setArtist(artist));
+        return remoteRemoteDataSource.getEventsForArtist(artist, location, apiKey).doOnNext(events -> {
+            artist.setEvents(events);
+            localDataSource.setArtist(artist);
+        });
     }
 }

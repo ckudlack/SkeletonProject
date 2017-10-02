@@ -48,6 +48,11 @@ public class SoundCloudRemoteDataSource implements SoundCloudDataContract.DataSo
     }
 
     @Override
+    public Observable<Void> setFollowings(List<Artist> artists) {
+        return null;
+    }
+
+    @Override
     public void close() {
         realm.close();
     }

@@ -1,4 +1,4 @@
-package com.cdk.skeletonproject;
+package com.cdk.skeletonproject.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.data.Artist;
 
 import java.util.ArrayList;

@@ -2,7 +2,6 @@ package com.cdk.skeletonproject.mvp.presenter;
 
 import com.cdk.skeletonproject.DefaultSubscriber;
 import com.cdk.skeletonproject.data.Artist;
-import com.cdk.skeletonproject.data.SongKickEvent;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
 import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 
@@ -20,11 +19,12 @@ public class MainPresenter implements MainContract.Presenter {
 
     public void onStop() {
         useCase.clear();
+        view.unregisterEventBus();
     }
 
     @Override
     public void onStart() {
-        // no-op
+        view.registerEventBus();
     }
 
     @Override
@@ -53,6 +53,8 @@ public class MainPresenter implements MainContract.Presenter {
             public void onNext(Artist artist) {
                 if (artist == null) {
                     view.startUserSelectionActivity();
+                } else if (artist.getFollowings().size() > 0) {
+                    view.startEventsActivity();
                 } else {
                     getDefaultUserFollowing(clientId);
                 }
@@ -66,7 +68,17 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void dialogContinueClicked() {
-        view.startScanningService();
+    public void dialogContinueClicked(List<Artist> artists) {
+        useCase.setFollowings(artists, new DefaultSubscriber<Void>() {
+            @Override
+            public void onNext(Void aVoid) {
+                view.startScanningService(artists);
+            }
+        });
+    }
+
+    @Override
+    public void onScanComplete() {
+        view.startEventsActivity();
     }
 }

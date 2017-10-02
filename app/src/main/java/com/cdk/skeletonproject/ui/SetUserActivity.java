@@ -9,7 +9,7 @@ import android.text.Editable;
 import android.widget.EditText;
 
 import com.cdk.skeletonproject.R;
-import com.cdk.skeletonproject.UsersAdapter;
+import com.cdk.skeletonproject.adapter.UsersAdapter;
 import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SetUserContract;
 import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;

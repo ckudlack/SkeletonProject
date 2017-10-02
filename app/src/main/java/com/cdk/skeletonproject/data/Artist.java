@@ -22,7 +22,11 @@ public class Artist implements RealmModel, Parcelable {
     private RealmList<Artist> followings;
     private RealmList<SongKickEvent> events;
     private boolean isDefaultUser = false;
-    private boolean userIsSelected = true;
+
+    // TODO: Change back to default true after testing
+    private boolean userIsSelected = false;
+
+    private boolean hasEvents = false;
 
     public static Artist initialize(SoundCloudUserResponse soundCloudUserResponse) {
         Artist artist = new Artist();
@@ -120,9 +124,14 @@ public class Artist implements RealmModel, Parcelable {
         return events;
     }
 
+    public boolean hasEvents() {
+        return hasEvents;
+    }
+
     public void setEvents(List<SongKickEvent> events) {
-        this.events.clear();
+        this.events = new RealmList<>();
         this.events.addAll(events);
+        hasEvents = events.size() > 0;
     }
 
     @Override
@@ -141,6 +150,7 @@ public class Artist implements RealmModel, Parcelable {
         dest.writeInt(this.followingsCount);
         dest.writeByte(this.isDefaultUser ? (byte) 1 : (byte) 0);
         dest.writeByte(this.userIsSelected ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasEvents ? (byte) 1 : (byte) 0);
     }
 
     public Artist() {
@@ -156,6 +166,7 @@ public class Artist implements RealmModel, Parcelable {
         this.followingsCount = in.readInt();
         this.isDefaultUser = in.readByte() != 0;
         this.userIsSelected = in.readByte() != 0;
+        this.hasEvents = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<Artist> CREATOR = new Parcelable.Creator<Artist>() {

@@ -5,6 +5,8 @@ import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.SongKickDataContract;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 
+import java.util.List;
+
 import rx.Observable;
 
 public class MainUseCase extends UseCase {
@@ -27,6 +29,10 @@ public class MainUseCase extends UseCase {
 
     public void setDefaultUser(Artist user, DefaultSubscriber subscriber) {
         execute(soundCloudRepository.setDefaultUser(user), subscriber);
+    }
+
+    public void setFollowings(List<Artist> artists, DefaultSubscriber subscriber) {
+        execute(soundCloudRepository.setFollowings(artists), subscriber);
     }
 
     public void getDefaultUser(DefaultSubscriber subscriber) {

@@ -19,7 +19,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.cdk.skeletonproject.R;
-import com.cdk.skeletonproject.UsersAdapter;
+import com.cdk.skeletonproject.ScanCompleteEvent;
+import com.cdk.skeletonproject.adapter.UsersAdapter;
 import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
 import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
@@ -43,6 +44,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location>, SwipeRefreshLayout.OnRefreshListener {
@@ -130,6 +132,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
@@ -141,11 +149,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .setTitle("Start scanning?")
                 .setMessage("This will scan the artists you've selected to see if they're performing near you." +
                         " Please double check that you have selected correctly")
-                .setPositiveButton("Continue", (dialogInterface, i) -> presenter.dialogContinueClicked())
+                .setPositiveButton("Continue", (dialogInterface, i) -> presenter.dialogContinueClicked(adapter.getSelectedUsers()))
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                 .create();
 
         alertDialog.show();
+    }
+
+    @SuppressWarnings("unused")
+    public void onEvent(ScanCompleteEvent event) {
+        presenter.onScanComplete();
+        EventBus.getDefault().removeStickyEvent(ScanCompleteEvent.class);
     }
 
     @Override
@@ -179,9 +193,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void startScanningService() {
+    public void startScanningService(List<Artist> artists) {
         startService(new Intent(this, SoundCloudScanningService.class)
-                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) adapter.getSelectedUsers()));
+                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) artists));
+    }
+
+    @Override
+    public void registerEventBus() {
+        EventBus.getDefault().registerSticky(this);
+    }
+
+    @Override
+    public void unregisterEventBus() {
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void startEventsActivity() {
+        startActivity(EventsActivity.newIntent(this));
     }
 
     @Override

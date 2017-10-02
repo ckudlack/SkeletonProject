@@ -24,6 +24,9 @@
             android:label="Select a user"/>
 
         <service android:name=".service.SoundCloudScanningService"/>
+
+        <activity android:name=".ui.EventsActivity">
+        </activity>
     </application>
 
 </manifest>
