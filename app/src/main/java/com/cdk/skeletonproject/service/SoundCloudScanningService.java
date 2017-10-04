@@ -63,7 +63,6 @@ public class SoundCloudScanningService extends Service {
                 new DefaultSubscriber<List<SongKickEvent>>() {
                     @Override
                     public void onCompleted() {
-                        // TODO: Notify activity
                         createTextNotification("Scan completed");
                         EventBus.getDefault().postSticky(new ScanCompleteEvent());
                         stopSelf();
@@ -103,36 +102,48 @@ public class SoundCloudScanningService extends Service {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String channelId = "scanning";
 
+        final NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, channelId).setVibrate(null).setSound(null).setOngoing(true)
+                        .setProgress(listSize, progress, false)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Scanning your artists...")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             CharSequence channelName = "Artist Scan";
             final int importance = NotificationManager.IMPORTANCE_HIGH;
             final NotificationChannel notificationChannel;
 
             notificationChannel = new NotificationChannel(channelId, channelName, importance);
+            notificationChannel.enableVibration(false);
+            notificationChannel.enableLights(false);
             notificationManager.createNotificationChannel(notificationChannel);
-        } else {
-            // TODO: Use notification channel
-            final NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(this, channelId).setVibrate(null).setSound(null).setOngoing(true)
-                            .setProgress(listSize, progress, false)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("Scanning your artists...")
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-            notificationManager.notify(notificationId, builder.build());
         }
+
+        notificationManager.notify(notificationId, builder.build());
     }
 
     private void createTextNotification(String text) {
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "scanning";
 
-        // TODO: Use notification channel
         final NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this).setVibrate(null).setSound(null).setOngoing(false)
+                new NotificationCompat.Builder(this, channelId).setVibrate(null).setSound(null).setOngoing(false)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(text)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence channelName = "Artist Scan";
+            final int importance = NotificationManager.IMPORTANCE_HIGH;
+            final NotificationChannel notificationChannel;
+
+            notificationChannel = new NotificationChannel(channelId, channelName, importance);
+            notificationChannel.enableVibration(true);
+            notificationChannel.enableLights(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
 
         notificationManager.notify(notificationId, builder.build());
     }

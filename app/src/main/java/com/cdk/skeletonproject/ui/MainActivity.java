@@ -153,15 +153,21 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @OnClick(R.id.scan_button)
     void scanButtonClicked() {
-        final AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("Start scanning?")
-                .setMessage("This will scan the artists you've selected to see if they're performing near you." +
-                        " Please double check that you have selected correctly")
-                .setPositiveButton("Continue", (dialogInterface, i) -> presenter.dialogContinueClicked(adapter.getSelectedUsers()))
-                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
-                .create();
+        if (userLocation != null) {
+            final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setTitle("Start scanning?")
+                    .setMessage("This will scan the artists you've selected to see if they're performing near you." +
+                            " Please double check that you have selected correctly")
+                    .setPositiveButton("Continue", (dialogInterface, i) -> presenter.dialogContinueClicked(adapter.getSelectedUsers()))
+                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .create();
 
-        alertDialog.show();
+            alertDialog.show();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    COARSE_LOCATION_PERMISSION_CODE);
+        }
     }
 
     @SuppressWarnings("unused")
