@@ -1,7 +1,7 @@
 package com.cdk.skeletonproject.mvp.datasource;
 
-import com.cdk.skeletonproject.data.FollowingsResponse;
 import com.cdk.skeletonproject.data.Artist;
+import com.cdk.skeletonproject.data.FollowingsResponse;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 import com.cdk.skeletonproject.network.SoundCloudService;
 

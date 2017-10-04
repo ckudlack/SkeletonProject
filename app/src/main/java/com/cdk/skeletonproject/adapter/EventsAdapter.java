@@ -1,8 +1,11 @@
 package com.cdk.skeletonproject.adapter;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,8 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cdk.skeletonproject.R;
 import com.cdk.skeletonproject.data.Artist;
+import com.cdk.skeletonproject.utils.BitmapUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +34,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsView
 
     @Override
     public EventsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final EventsViewHolder eventsViewHolder = new EventsViewHolder(View.inflate(parent.getContext(), R.layout.artist_event_list_item, null));
+        final EventsViewHolder eventsViewHolder = new EventsViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.artist_event_list_item, parent, false));
         eventsViewHolder.songKickButton.setOnClickListener(view -> {
             final int adapterPosition = eventsViewHolder.getAdapterPosition();
             if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -71,7 +78,21 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsView
         void bindEvent(Artist artist) {
             artistName.setText(artist.getUsername());
             eventName.setText(artist.getEvents().get(0).getDisplayName());
-            Glide.with(itemView.getContext()).load(artist.getAvatarUrl()).into(artistAvatar);
+
+            SimpleTarget target = new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    final Palette palette = Palette.from(resource).maximumColorCount(32).generate();
+                    final Palette.Swatch swatch = BitmapUtils.checkVibrantSwatch(palette);
+                    itemView.setBackgroundColor(swatch.getRgb());
+                    artistName.setTextColor(swatch.getTitleTextColor());
+                    eventName.setTextColor(swatch.getTitleTextColor());
+                    artistAvatar.setImageBitmap(resource);
+                }
+            };
+
+            Glide.with(itemView.getContext()).load(artist.getAvatarUrl()).asBitmap().into(target);
+
         }
     }
 }

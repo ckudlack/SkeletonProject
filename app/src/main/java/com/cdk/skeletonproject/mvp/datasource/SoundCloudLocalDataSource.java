@@ -11,59 +11,68 @@ import rx.Observable;
 
 public class SoundCloudLocalDataSource implements SoundCloudDataContract.DataSource {
 
-    private Realm realm;
-
-    public SoundCloudLocalDataSource(Realm realm) {
-        this.realm = realm;
+    public SoundCloudLocalDataSource() {
     }
 
     @Override
     public Observable<List<Artist>> findUser(String userName, String clientId) {
-        final RealmResults<Artist> results = realm.where(Artist.class).findAll();
-        final List<Artist> artists = realm.copyFromRealm(results);
+        final List<Artist> artists;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            final RealmResults<Artist> results = realm.where(Artist.class).findAll();
+            artists = realm.copyFromRealm(results);
+        }
         return Observable.just(artists);
     }
 
     @Override
     public Observable<List<Artist>> getFollowing(long userId, String clientId) {
-        final Realm defaultInstance = Realm.getDefaultInstance();
-        final Artist user = defaultInstance.where(Artist.class).equalTo("id", userId).findFirst();
-        if (user == null) {
-            return Observable.empty();
+        List<Artist> followings;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            final Artist user = realm.where(Artist.class).equalTo("id", userId).findFirst();
+            if (user == null) {
+                return Observable.empty();
+            }
+
+            followings = realm.copyFromRealm(user.getFollowings());
         }
 
-        final List<Artist> followings = defaultInstance.copyFromRealm(user.getFollowings());
-        defaultInstance.close();
         return Observable.just(followings);
     }
 
     @Override
     public Observable<Void> setDefaultUser(Artist user) {
-        realm.executeTransaction(realm -> {
-            realm.delete(Artist.class);
-            realm.insert(user);
-        });
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> {
+                realm1.delete(Artist.class);
+                realm1.insert(user);
+            });
+        }
         return Observable.just(null);
     }
 
     @Override
     public Observable<Artist> getDefaultUser() {
-        final Artist defaultUser = realm.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
-        return defaultUser == null ? Observable.just(null) : Observable.just(realm.copyFromRealm(defaultUser));
+        Artist defaultUser;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            final Artist result = realm.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
+            defaultUser = result == null ? null : realm.copyFromRealm(result);
+        }
+        return Observable.just(defaultUser);
     }
 
     @Override
     public Observable<Void> setFollowings(List<Artist> artists) {
-        realm.executeTransaction(realm -> {
-            final Artist defaultUser = realm.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
-            defaultUser.setFollowings(artists);
-            realm.insert(defaultUser);
-        });
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> {
+                final Artist defaultUser = realm1.where(Artist.class).equalTo("isDefaultUser", true).findFirst();
+                defaultUser.setFollowings(artists);
+                realm1.insertOrUpdate(defaultUser);
+            });
+        }
         return Observable.just(null);
     }
 
     @Override
     public void close() {
-        realm.close();
     }
 }

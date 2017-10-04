@@ -2,7 +2,6 @@ package com.cdk.skeletonproject.mvp.usecase;
 
 import com.cdk.skeletonproject.DefaultSubscriber;
 import com.cdk.skeletonproject.data.Artist;
-import com.cdk.skeletonproject.mvp.contract.SongKickDataContract;
 import com.cdk.skeletonproject.mvp.contract.SoundCloudDataContract;
 
 import java.util.List;
@@ -12,11 +11,9 @@ import rx.Observable;
 public class MainUseCase extends UseCase {
 
     private SoundCloudDataContract.Repository soundCloudRepository;
-    private SongKickDataContract.Repository songKickRepository;
 
-    public MainUseCase(SoundCloudDataContract.Repository soundCloudRepository, SongKickDataContract.Repository songKickRepository) {
+    public MainUseCase(SoundCloudDataContract.Repository soundCloudRepository) {
         this.soundCloudRepository = soundCloudRepository;
-        this.songKickRepository = songKickRepository;
     }
 
     public void findUser(String userName, String clientId, DefaultSubscriber subscriber) {

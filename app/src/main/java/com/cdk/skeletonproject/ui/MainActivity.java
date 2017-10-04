@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,12 +24,9 @@ import com.cdk.skeletonproject.ScanCompleteEvent;
 import com.cdk.skeletonproject.adapter.UsersAdapter;
 import com.cdk.skeletonproject.data.Artist;
 import com.cdk.skeletonproject.mvp.contract.MainContract;
-import com.cdk.skeletonproject.mvp.datasource.SongKickLocalDataSource;
-import com.cdk.skeletonproject.mvp.datasource.SongKickRemoteDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudLocalDataSource;
 import com.cdk.skeletonproject.mvp.datasource.SoundCloudRemoteDataSource;
 import com.cdk.skeletonproject.mvp.presenter.MainPresenter;
-import com.cdk.skeletonproject.mvp.repository.SongKickRepository;
 import com.cdk.skeletonproject.mvp.repository.SoundCloudRepository;
 import com.cdk.skeletonproject.mvp.usecase.MainUseCase;
 import com.cdk.skeletonproject.network.Api;
@@ -45,11 +43,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, UsersAdapter.UserItemClickListener, OnSuccessListener<Location>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int COARSE_LOCATION_PERMISSION_CODE = 9876;
+    public static final String EXTRA_LOCATION = "location";
 
     @BindView(R.id.def_user_name) TextView userNameView;
     @BindView(R.id.users_list) RecyclerView recyclerView;
@@ -61,13 +59,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private MainContract.Presenter presenter;
     private UsersAdapter adapter;
     private FusedLocationProviderClient fusedLocationClient;
-
-    private Location userLocation = null;
+    private Location userLocation;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_LOCATION)) {
+            userLocation = savedInstanceState.getParcelable(EXTRA_LOCATION);
+        }
 
         initPresenter();
 
@@ -90,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private void initPresenter() {
         presenter = new MainPresenter(this, new MainUseCase(
                 new SoundCloudRepository(
-                        new SoundCloudLocalDataSource(Realm.getDefaultInstance()), new SoundCloudRemoteDataSource(Api.getSoundCloudService())),
-                new SongKickRepository(new SongKickLocalDataSource(), new SongKickRemoteDataSource(Api.getSongKickService()))));
+                        new SoundCloudLocalDataSource(),
+                        new SoundCloudRemoteDataSource(Api.getSoundCloudService()))
+        ));
     }
 
     @Override
@@ -141,6 +143,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putParcelable(EXTRA_LOCATION, userLocation);
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @OnClick(R.id.scan_button)
@@ -195,7 +203,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void startScanningService(List<Artist> artists) {
         startService(new Intent(this, SoundCloudScanningService.class)
-                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) artists));
+                .putParcelableArrayListExtra("ARTISTS", (ArrayList<? extends Parcelable>) artists)
+                .putExtra(EXTRA_LOCATION, userLocation));
     }
 
     @Override
@@ -221,9 +230,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
-
-            // TODO: Save this in Realm instead of in memory
-            userLocation = location;
+            this.userLocation = location;
         }
     }
 
